@@ -10,7 +10,7 @@ public class WebElements extends PageComponent {
     @FindBy(id="firstHeading")
     private WebElementFacade firstHeading;
 
-    @FindBy(xpath = "//*[@c='shopping_cart_container']/a/span")
+    @FindBy(xpath = "//*[@id='shopping_cart_container']/a/span")
     private WebElementFacade cart;
     @FindBy(className = "shopping_cart_link")
     private WebElementFacade emptyCart;
