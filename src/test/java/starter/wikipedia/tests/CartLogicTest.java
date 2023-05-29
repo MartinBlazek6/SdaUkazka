@@ -2,12 +2,10 @@ package starter.wikipedia.tests;
 
 import net.serenitybdd.junit5.SerenityJUnit5Extension;
 import net.thucydides.core.annotations.Managed;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import starter.wikipedia.enums.Items;
 import starter.wikipedia.enums.Users;
 import starter.wikipedia.services.NavigateActions;
@@ -40,11 +38,34 @@ public class CartLogicTest {
         Assertions.assertEquals(String.valueOf(2),webElements.cartItems());
 
         actions.removeFromCartByName(Items.BACKPACK.getValue());
-        Assertions.assertEquals(String.valueOf(3),webElements.cartItems());
+        Assertions.assertEquals(String.valueOf(1),webElements.cartItems());
+    }
+
+    @Test
+    @Order(1)
+    void deleteCartItemsFromCartPage() {
+        actions.addToCartByName(Items.BACKPACK.getValue());
+        actions.addToCartByName(Items.BIKE_LIGHT.getValue());
+        Assertions.assertEquals(String.valueOf(2),webElements.cartItems());
+        webElements.clickCartIcon();
+        actions.removeFromCartByName(Items.BACKPACK.getValue());
+        Assertions.assertEquals(String.valueOf(1),webElements.cartItems());
+    }
+
+    @Test
+    @Order(2)
+    void checkCartItems() {
+        actions.addToCartByName(Items.BACKPACK.getValue());
+        actions.addToCartByName(Items.BIKE_LIGHT.getValue());
+        webElements.clickCartIcon();
+        WebElement BACKPACK = actions.findElementByTextContains("Sauce Labs Backpack");
+        WebElement BIKE_LIGHT = actions.findElementByTextContains("Sauce Labs Bike Light");
+        Assertions.assertEquals("Sauce Labs Backpack",BACKPACK.getText());
+        Assertions.assertEquals("Sauce Labs Bike Light",BIKE_LIGHT.getText());
     }
 
     @AfterEach
     void afterEach(){
-
+        webElements.clearCart();
     }
 }
