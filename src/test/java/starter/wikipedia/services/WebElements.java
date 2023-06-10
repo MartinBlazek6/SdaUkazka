@@ -45,7 +45,7 @@ public class WebElements extends PageComponent {
     public void clearCart(){
         JavascriptExecutor jsExecutor = (JavascriptExecutor) getDriver();
         jsExecutor.executeScript("window.localStorage.removeItem('cart-contents');");
-        jsExecutor.executeScript("window.localStorage.removeItem('cart-contents');");
+//        jsExecutor.executeScript("window.localStorage.removeItem('cart-contents');");
         getDriver().navigate().refresh();
     }
 
