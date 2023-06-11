@@ -26,7 +26,7 @@ class LoginTest {
     @Order(1)
     void loginPageValid() {
         navigate.toTheHomePage();
-        actions.logIn(Users.STANDARD_USER.name().toLowerCase(),System.getenv("password"));
+        actions.logIn(Users.STANDARD_USER.name().toLowerCase(),"secret_sauce");
         Assertions.assertEquals(expectedUrlAfterLogin,driver.getCurrentUrl());
     }
 
@@ -56,7 +56,7 @@ class LoginTest {
     @Order(5)
     void loginPageSwitchedCredentials() {
         navigate.toTheHomePage();
-        actions.logIn(System.getenv("password"),Users.STANDARD_USER.name().toLowerCase());
+        actions.logIn("secret_sauce",Users.STANDARD_USER.name().toLowerCase());
         Assertions.assertNotEquals(expectedUrlAfterLogin,driver.getCurrentUrl());
     }
 }
