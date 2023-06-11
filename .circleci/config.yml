@@ -1,41 +1,54 @@
 version: 2.1
-executors:
-  maven-executor:
-    docker:
-      - image: circleci/openjdk:11-jdk
+
+orbs:
+  java: circleci/openjdk@1.0
 
 jobs:
   build:
-    executor: maven-executor
+    docker:
+      - image: circleci/maven:3.6-jdk-11
+
     steps:
       - checkout
 
-      - run:
-          name: Set up Java environment
-          command: |
-            echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> $BASH_ENV
-            source $BASH_ENV
-
       - restore_cache:
-          key: serenity-bdd-{{ .Branch }}-{{ checksum "pom.xml" }}
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
 
       - run:
-          name: Build and test with Maven
-          command: mvn clean verify -Dmaven.test.failure.ignore=true
+          name: Build with Maven
+          command: mvn clean install
 
       - save_cache:
-          key: serenity-bdd-{{ .Branch }}-{{ checksum "pom.xml" }}
           paths:
             - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
 
-      - store_test_results:
-          path: target/site/serenity
+  test:
+    docker:
+      - image: circleci/maven:3.6-jdk-11
 
-      - store_artifacts:
-          path: target/site/serenity
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+
+      - run:
+          name: Run tests with Maven
+          command: mvn test
+
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
 
 workflows:
   version: 2
   build-and-test:
     jobs:
       - build
+      - test:
+          requires:
+            - build
