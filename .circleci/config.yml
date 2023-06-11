@@ -12,7 +12,9 @@ jobs:
 
       - run:
           name: Set up Java environment
-          command: echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> $BASH_ENV && source $BASH_ENV
+          command: |
+            echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> $BASH_ENV
+            source $BASH_ENV
 
       - restore_cache:
           key: serenity-bdd-{{ .Branch }}-{{ checksum "pom.xml" }}
