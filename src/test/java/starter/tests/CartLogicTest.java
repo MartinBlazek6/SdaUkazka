@@ -1,4 +1,4 @@
-package starter.wikipedia.tests;
+package starter.tests;
 
 import net.serenitybdd.junit5.SerenityJUnit5Extension;
 import net.thucydides.core.annotations.Managed;
@@ -6,11 +6,11 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import starter.wikipedia.enums.Items;
-import starter.wikipedia.enums.Users;
-import starter.wikipedia.services.NavigateActions;
-import starter.wikipedia.services.UtilityActions;
-import starter.wikipedia.services.WebElements;
+import starter.enums.Items;
+import starter.enums.Users;
+import starter.services.NavigateActions;
+import starter.services.UtilityActions;
+import starter.services.WebElements;
 
 @ExtendWith(SerenityJUnit5Extension.class)
 public class CartLogicTest {

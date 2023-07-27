@@ -1,4 +1,4 @@
-package starter.wikipedia.services;
+package starter.services;
 
 import net.serenitybdd.core.pages.PageComponent;
 import net.serenitybdd.core.pages.WebElementFacade;

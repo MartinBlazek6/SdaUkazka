@@ -40,7 +40,6 @@
 #            - build-and-test
 
 
-
 version: 2.1
 jobs:
   build:
@@ -49,18 +48,22 @@ jobs:
 
     working_directory: ~/project
 
+    environment:
+      PASSWORD: secret_sauce
+
     steps:
       - checkout
 
       # You can add any additional setup steps here, like installing dependencies.
 
       - run:
-          name: Build and Run Unit Tests
-          command: mvn test
+          name: Run Tests in 'starter' package
+          command: mvn test -Dtest=starter.*
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
+
 
