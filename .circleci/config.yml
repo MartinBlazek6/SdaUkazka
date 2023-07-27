@@ -62,10 +62,10 @@ jobs:
           environment:
             PASSWORD: $PASSWORD
 
-      # Save the build and test logs as artifacts for later inspection.
+      # Save the test reports as artifacts for later inspection.
       - store_artifacts:
-          path: target/surefire-reports/
-          destination: surefire-reports/
+          path: target/site/serenity
+          destination: serenity-reports
 
 workflows:
   version: 2
