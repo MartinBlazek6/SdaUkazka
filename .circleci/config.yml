@@ -58,7 +58,7 @@ jobs:
 
       - run:
           name: Run Serenity BDD Tests with Debug Logging
-          command: mvn clean verify -Dserenity.environment=ci -e -B
+          command: mvn clean verify -Dserenity.environment=ci -e -X
           environment:
             PASSWORD: $PASSWORD
 
