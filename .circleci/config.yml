@@ -50,7 +50,6 @@ jobs:
 
     environment:
       PASSWORD: secret_sauce
-#      PASSWORD: ${PASSWORD}
 
     steps:
       - checkout
@@ -58,14 +57,18 @@ jobs:
       # You can add any additional setup steps here, like installing dependencies.
 
       - run:
-          name: Run Serenity BDD Tests
-          command: mvn clean verify -Dserenity.environment=ci
+          name: Run Serenity BDD Tests with Debug Logging
+          command: mvn clean verify -Dserenity.environment=ci -e -X
+          environment:
+            PASSWORD: $PASSWORD
+
+      # Save the build and test logs as artifacts for later inspection.
+      - store_artifacts:
+          path: target/surefire-reports/
+          destination: surefire-reports/
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
-
-
-
