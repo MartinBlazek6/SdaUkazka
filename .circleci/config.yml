@@ -50,6 +50,7 @@ jobs:
 
     environment:
       PASSWORD: secret_sauce
+#      PASSWORD: ${PASSWORD}
 
     steps:
       - checkout
@@ -57,13 +58,14 @@ jobs:
       # You can add any additional setup steps here, like installing dependencies.
 
       - run:
-          name: Run Tests in 'starter' package
-          command: mvn test -Dtest=starter.*
+          name: Run Serenity BDD Tests
+          command: mvn clean verify -Dserenity.environment=ci
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
+
 
 
