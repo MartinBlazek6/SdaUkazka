@@ -1,40 +1,66 @@
+#version: 2.1
+#
+#executors:
+#  maven-executor:
+#    docker:
+#      - image: maven:3.8.3-jdk-11
+#    environment:
+#      MAVEN_OPTS: "-Dmaven.repo.local=$HOME/.m2/repository"
+#
+#jobs:
+#  build-and-test:
+#    executor: maven-executor
+#    steps:
+#      - checkout
+#
+#      - run:
+#          name: Build and Test
+#          command: mvn clean verify
+#
+#      - store_test_results:
+#          path: target/failsafe-reports
+#
+#  upload-report:
+#    executor: maven-executor
+#    steps:
+#      - run:
+#          name: Upload Report
+#          command: |
+#            mkdir -p test-reports
+#            cp -R target/site/serenity test-reports/
+#            # Additional commands to upload the test report to a storage or reporting service
+#
+#workflows:
+#  version: 2
+#  build-and-upload:
+#    jobs:
+#      - build-and-test
+#      - upload-report:
+#          requires:
+#            - build-and-test
+
+
+
 version: 2.1
-
-executors:
-  maven-executor:
-    docker:
-      - image: maven:3.8.3-jdk-11
-    environment:
-      MAVEN_OPTS: "-Dmaven.repo.local=$HOME/.m2/repository"
-
 jobs:
-  build-and-test:
-    executor: maven-executor
+  build:
+    docker:
+      - image: maven:latest
+
+    working_directory: ~/project
+
     steps:
       - checkout
 
-      - run:
-          name: Build and Test
-          command: mvn clean verify
+      # You can add any additional setup steps here, like installing dependencies.
 
-      - store_test_results:
-          path: target/failsafe-reports
-
-  upload-report:
-    executor: maven-executor
-    steps:
       - run:
-          name: Upload Report
-          command: |
-            mkdir -p test-reports
-            cp -R target/site/serenity test-reports/
-            # Additional commands to upload the test report to a storage or reporting service
+          name: Build and Run Unit Tests
+          command: mvn test
 
 workflows:
   version: 2
-  build-and-upload:
+  build_and_test:
     jobs:
-      - build-and-test
-      - upload-report:
-          requires:
-            - build-and-test
+      - build
+
