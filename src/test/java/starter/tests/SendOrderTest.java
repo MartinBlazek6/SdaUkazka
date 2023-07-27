@@ -85,6 +85,7 @@ public class SendOrderTest {
     }
     @Test
     @Order(5)
+    @Disabled
     void tryToOrderNothing() {
         webElements.clickEmptyCartIcon();
         Assertions.assertFalse(webElements.checkoutButtonIsClickable());

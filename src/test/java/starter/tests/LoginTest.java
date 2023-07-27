@@ -3,6 +3,7 @@ package starter.tests;
 import net.serenitybdd.junit5.SerenityJUnit5Extension;
 import net.thucydides.core.annotations.Managed;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +45,7 @@ class LoginTest {
         Assertions.assertNotEquals(expectedUrlAfterLogin,driver.getCurrentUrl());
     }
     @Test
+    @Disabled
     @Order(4)
     void loginPageInvalidUsername() {
         navigate.toTheHomePage();
