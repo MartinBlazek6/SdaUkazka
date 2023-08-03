@@ -45,11 +45,11 @@ class LoginTest {
         Assertions.assertNotEquals(expectedUrlAfterLogin,driver.getCurrentUrl());
     }
     @Test
-    @Disabled
     @Order(4)
     void loginPageInvalidUsername() {
         navigate.toTheHomePage();
-        actions.logIn("InvalidUsername",System.getenv("password"));
+//        actions.logIn("InvalidUsername",System.getenv("password"));
+        actions.logIn("InvalidUsername","secret_sauce");
         Assertions.assertNotEquals(expectedUrlAfterLogin,driver.getCurrentUrl());
     }
 

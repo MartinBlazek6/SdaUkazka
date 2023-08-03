@@ -40,7 +40,7 @@ public class WebElements extends PageComponent {
     }
 
     public boolean checkoutButtonIsClickable(){
-       return checkoutButton.isClickable();
+       return checkoutButton.waitUntilClickable().isClickable();
     }
     public void clearCart(){
         JavascriptExecutor jsExecutor = (JavascriptExecutor) getDriver();
