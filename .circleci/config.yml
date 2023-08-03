@@ -44,54 +44,23 @@
 #
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
+
 version: 2
 jobs:
-  build:
-    docker:
-      # specify the version you desire here
-      - image: vamccc/chromedriver2.41-maven3.5.3-jdk11:v0.1  # Change to JDK 11 image
+build:
+  working_directory: /tmp
+  steps:
+    - run:
+        name: Creating Dummy Artifacts
+        command: |
+          echo "my artifact file" > /tmp/art-1;
+          mkdir /tmp/artifacts;
+          echo "my artifact files in a dir" > /tmp/artifacts/art-2;
 
-    working_directory: ~/repo
+    - store_artifacts:
+        path: /tmp/art-1
+        destination: artifact-file
 
-    environment:
-      # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xmx3200m
-      password: -secret_sauce
-
-    steps:
-      - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
-      - run: mvn dependency:go-offline
-
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
-
-      # run tests!
-      - run: mvn verify -Dwebdriver.driver=chrome -Dchrome.switches="--headless;--no-sandbox;--disable-dev-shm-usage;--ignore-certificate-errors";
-
-  artifacts_creation:
-    working_directory: /tmp
-    steps:
-      - run:
-          name: Creating Dummy Artifacts
-          command: |
-            echo "my artifact file" > /tmp/art-1;
-            mkdir /tmp/artifacts;
-            echo "my artifact files in a dir" > /tmp/artifacts/art-2;
-
-      - store_artifacts:
-          path: /tmp/art-1
-          destination: artifact-file
-
-      - store_artifacts:
-          path: /tmp/artifacts
+    - store_artifacts:
+        path: /tmp/artifacts
 
