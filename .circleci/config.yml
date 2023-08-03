@@ -3,7 +3,7 @@ version: 2.1
 executors:
   maven-executor:
     docker:
-      - image: maven:3.8.3-jdk-16
+      - image: maven:3.8.3-jdk-17
     environment:
       MAVEN_OPTS: "-Dmaven.repo.local=$HOME/.m2/repository"
 
