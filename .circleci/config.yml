@@ -12,11 +12,8 @@ jobs:
     executor: maven-executor
     steps:
       - run:
-          name: Start Docker
-          command: sudo service docker start
-      - run:
           name: Start Selenium Standalone Chrome
-          command: docker run -d -p 4444:4444 selenium/standalone-chrome:latest
+          command: docker run -d -p 4444:4444 --privileged selenium/standalone-chrome:latest
           background: true
 
   build-and-test:
