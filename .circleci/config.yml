@@ -4,7 +4,7 @@ executors:
   maven-executor:
     docker:
       - image: maven:3.8.3-jdk-11
-      - image: selenium/standalone-chrome:3.141.59-20211007
+      - image: selenium/standalone-chrome:latest
     environment:
       MAVEN_OPTS: "-Dmaven.repo.local=$HOME/.m2/repository"
 
@@ -13,22 +13,6 @@ jobs:
     executor: maven-executor
     steps:
       - checkout
-      - run:
-          name: Install ChromeDriver 2.46
-          command: |
-            CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d '.' -f 1)
-            CHROMEDRIVER_VERSION=2.46
-            if [ "$CHROME_VERSION" = "$CHROMEDRIVER_VERSION" ]; then
-              echo "ChromeDriver is compatible with Chrome version $CHROME_VERSION."
-            else
-              echo "ChromeDriver version $CHROMEDRIVER_VERSION is not compatible with Chrome version $CHROME_VERSION."
-              exit 1
-            fi
-            wget -N https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip -P ~/
-            unzip -o ~/chromedriver_linux64.zip -d ~/
-            rm ~/chromedriver_linux64.zip
-            sudo mv -f ~/chromedriver /usr/local/bin/chromedriver
-            sudo chmod +x /usr/local/bin/chromedriver
       - run:
           name: Build and Test
           command: mvn -e -X clean verify --file pom.xml
@@ -56,52 +40,3 @@ workflows:
       - upload-report:
           requires:
             - build-and-test
-
-
-
-
-
-
-#version: 2.1
-#
-#executors:
-#  maven-executor:
-#    docker:
-#      - image: maven:3.8.3-jdk-11
-##      - image: circleci/openjdk:11-jdk
-#      - image: selenium/standalone-chrome:latest
-#    environment:
-#      MAVEN_OPTS: "-Dmaven.repo.local=$HOME/.m2/repository"
-#
-#jobs:
-#  build-and-test:
-#    executor: maven-executor
-#    steps:
-#      - checkout
-#      - run:
-#          name: Build and Test
-#          command: mvn -e -X clean verify --file pom.xml
-#      - store_artifacts:
-#          path: target/site/serenity
-#          destination: artifact-file
-#      - store_artifacts:
-#          path: /tmp/artifacts
-#
-#  upload-report:
-#    executor: maven-executor
-#    steps:
-#      - run:
-#          name: Upload Report
-#          command: |
-#            mkdir -p test-reports
-#            cp -R target/site/serenity test-reports/
-#            # Additional commands to upload the test report to a storage or reporting service
-#
-#workflows:
-#  version: 2
-#  build-and-upload:
-#    jobs:
-#      - build-and-test
-#      - upload-report:
-#          requires:
-#            - build-and-test
