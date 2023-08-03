@@ -5,7 +5,7 @@ executors:
     docker:
       - image: maven:3.8.3-jdk-11
 #      - image: circleci/openjdk:11-jdk
-      - image: circleci/chrome:latest
+      - image: selenium/standalone-chrome:latest
     environment:
       MAVEN_OPTS: "-Dmaven.repo.local=$HOME/.m2/repository"
 
