@@ -1,66 +1,51 @@
-#version: 2.1
-#
-#executors:
-#  maven-executor:
-#    docker:
-#      - image: maven:3.8.3-jdk-11
-#    environment:
-#      MAVEN_OPTS: "-Dmaven.repo.local=$HOME/.m2/repository"
-#
-#jobs:
-#  build-and-test:
-#    executor: maven-executor
-#    steps:
-#      - checkout
-#
-#      - run:
-#          name: Build and Test
-#          command: mvn clean verify
-#
-#      - store_test_results:
-#          path: target/failsafe-reports
-#
-#  upload-report:
-#    executor: maven-executor
-#    steps:
-#      - run:
-#          name: Upload Report
-#          command: |
-#            mkdir -p test-reports
-#            cp -R target/site/serenity test-reports/
-#            # Additional commands to upload the test report to a storage or reporting service
-#
-#workflows:
-#  version: 2
-#  build-and-upload:
-#    jobs:
-#      - build-and-test
-#      - upload-report:
-#          requires:
-#            - build-and-test
+version: 2.1
 
+executors:
+  maven-executor:
+    docker:
+      - image: maven:3.8.3-jdk-11
+    environment:
+      MAVEN_OPTS: "-Dmaven.repo.local=$HOME/.m2/repository"
 
-# Java Maven CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-java/ for more details
-#
-
-version: 2
 jobs:
-build:
-  working_directory: /tmp
-  steps:
-    - run:
-        name: Creating Dummy Artifacts
-        command: |
-          echo "my artifact file" > /tmp/art-1;
-          mkdir /tmp/artifacts;
-          echo "my artifact files in a dir" > /tmp/artifacts/art-2;
+  build-and-test:
+    executor: maven-executor
+    steps:
+      - checkout
 
-    - store_artifacts:
-        path: /tmp/art-1
-        destination: artifact-file
+      - run:
+          name: Build and Test
+          command: mvn clean verify
 
-    - store_artifacts:
-        path: /tmp/artifacts
+      - store_artifacts:
+          path: /tmp/art-1
+          destination: artifact-file
+      - store_artifacts:
+          path: /tmp/artifacts
+
+  upload-report:
+    executor: maven-executor
+    steps:
+      - run:
+          name: Upload Report
+          command: |
+            mkdir -p test-reports
+            cp -R target/site/serenity test-reports/
+            # Additional commands to upload the test report to a storage or reporting service
+
+workflows:
+  version: 2
+  build-and-upload:
+    jobs:
+      - build-and-test
+      - upload-report:
+          requires:
+            - build-and-test
+
+
+ Java Maven CircleCI 2.0 configuration file
+
+ Check https://circleci.com/docs/2.0/language-java/ for more details
+
+
 
