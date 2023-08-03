@@ -4,10 +4,16 @@ executors:
   maven-executor:
     docker:
       - image: maven:3.8.3-jdk-11
+    environment:
+      MAVEN_OPTS: "-Dmaven.repo.local=$HOME/.m2/repository"
+
+  selenium-executor:
+    docker:
+      - image: selenium/standalone-chrome:latest
 
 jobs:
   start-selenium-container:
-    executor: maven-executor
+    executor: selenium-executor
     steps:
       - run:
           name: Start Selenium Standalone Chrome
@@ -42,11 +48,11 @@ jobs:
             # Additional commands to upload the test report to a storage or reporting service
 
   stop-selenium-container:
-    executor: maven-executor
+    executor: selenium-executor
     steps:
       - run:
           name: Stop Selenium Standalone Chrome
-          command: docker stop $(docker ps -q --filter ancestor=selenium/standalone-chrome:3.141.59)
+          command: docker stop $(docker ps -q --filter ancestor=selenium/standalone-chrome:latest)
 
 workflows:
   version: 2
@@ -62,6 +68,7 @@ workflows:
       - stop-selenium-container:  # Move 'requires' here
           requires:
             - upload-report
+
 
 
 
