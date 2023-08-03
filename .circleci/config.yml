@@ -15,7 +15,8 @@ jobs:
 
       - run:
           name: Build and Test
-          command: mvn clean verify
+#          command: mvn clean verify
+          command: mvn clean verify -Dserenity.environment=ci -e -B
 
       - store_artifacts:
           path: /tmp/art-1
