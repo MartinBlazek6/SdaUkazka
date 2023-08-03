@@ -12,14 +12,11 @@ jobs:
     executor: maven-executor
     steps:
       - checkout
-
       - run:
           name: Build and Test
-#          command: mvn clean verify
           command: mvn -e -X clean verify --file pom.xml
-
       - store_artifacts:
-          path: /tmp/art-1
+          path: target/site/serenity
           destination: artifact-file
       - store_artifacts:
           path: /tmp/artifacts
@@ -42,7 +39,3 @@ workflows:
       - upload-report:
           requires:
             - build-and-test
-
-
-
-
