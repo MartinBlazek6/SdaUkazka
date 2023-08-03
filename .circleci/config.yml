@@ -32,6 +32,17 @@ jobs:
             cp -R target/site/serenity test-reports/
             # Additional commands to upload the test report to a storage or reporting service
 
+
+#workflows:
+#  version: 2
+#  build-and-upload:
+#    jobs:
+#      - build-and-test:
+#          requires:
+#            executor: maven-executor
+#      - upload-report:
+#          requires:
+#            - build-and-test
 workflows:
   version: 2
   build-and-upload:
