@@ -16,7 +16,7 @@ jobs:
       - run:
           name: Build and Test
 #          command: mvn clean verify
-          command: mvn -B verify --file pom.xml
+          command: mvn -e -X clean verify --file pom.xml
 
       - store_artifacts:
           path: /tmp/art-1
