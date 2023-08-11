@@ -65,3 +65,5 @@ workflows:
       - stop-selenium-container:
           requires:
             - build-and-test
+    on_fail:
+      - stop-selenium-container
