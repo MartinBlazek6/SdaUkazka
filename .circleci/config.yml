@@ -39,9 +39,10 @@ jobs:
           name: Upload Report
           command: |
             mkdir -p test-reports
-#            cp -R /tmp/workspace/build/reports/tests/. test-reports/
             cp -R target/site/serenity test-reports/
             # Additional commands to upload the test report to a storage or reporting service
+            #cp -R /tmp/workspace/build/reports/tests/. test-reports/
+
 
   stop-selenium-container:
     executor: machine-executor
