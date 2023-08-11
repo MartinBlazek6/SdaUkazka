@@ -1,3 +1,63 @@
+#version: 2.1
+#
+#executors:
+#  gradle-executor:
+#    docker:
+#      - image: adoptopenjdk:11-jdk-hotspot
+#    environment:
+#      GRADLE_USER_HOME: "$HOME/.gradle"
+#
+#jobs:
+#  build-and-test:
+#    executor: gradle-executor
+#    steps:
+#      - attach_workspace:
+#          at: /root/project
+#      - run:
+#          name: Clear Workspace
+#          command: rm -rf /root/project/*
+#      - checkout
+#      - run:
+#          name: Build and Test
+#          command: ./gradlew clean test
+#      - store_artifacts:
+#          path: build/reports/tests
+#          destination: artifact-file
+#      - store_artifacts:
+#          path: /tmp/artifacts
+#
+#  upload-report:
+#    executor: gradle-executor
+#    steps:
+#      - attach_workspace:
+#          at: /root/project
+#      - run:
+#          name: Upload Report
+#          command: |
+#            mkdir -p test-reports
+#            cp -R . test-reports/
+#            # Additional commands to upload the test report to a storage or reporting service
+#
+#workflows:
+#  version: 2
+#  build-and-upload:
+#    jobs:
+#      - build-and-test
+#      - upload-report:
+#          requires:
+#            - build-and-test
+
+
+
+
+
+
+
+
+
+
+
+
 version: 2.1
 
 executors:
@@ -8,14 +68,19 @@ executors:
       GRADLE_USER_HOME: "$HOME/.gradle"
 
 jobs:
+  start-selenium-container:
+    executor: gradle-executor
+    steps:
+      - run:
+          name: Start Selenium Standalone Chrome
+          command: docker run -d -p 4444:4444 --privileged selenium/standalone-chrome:latest
+          background: true
+
   build-and-test:
     executor: gradle-executor
     steps:
       - attach_workspace:
-          at: /root/project
-      - run:
-          name: Clear Workspace
-          command: rm -rf /root/project/*
+          at: build/reports/tests
       - checkout
       - run:
           name: Build and Test
@@ -30,7 +95,7 @@ jobs:
     executor: gradle-executor
     steps:
       - attach_workspace:
-          at: /root/project
+          at: build/reports/tests
       - run:
           name: Upload Report
           command: |
@@ -38,92 +103,28 @@ jobs:
             cp -R . test-reports/
             # Additional commands to upload the test report to a storage or reporting service
 
+  stop-selenium-container:
+    executor: gradle-executor
+    steps:
+      - run:
+          name: Stop Selenium Standalone Chrome
+          command: docker stop $(docker ps -q --filter ancestor=selenium/standalone-chrome:latest)
+
 workflows:
   version: 2
   build-and-upload:
     jobs:
-      - build-and-test
+      - start-selenium-container
+      - build-and-test:
+          requires:
+            - start-selenium-container
       - upload-report:
           requires:
             - build-and-test
+      - stop-selenium-container:  # Move 'requires' here
+          requires:
+            - upload-report
 
-
-
-
-
-
-
-
-
-
-
-
-#version: 2.1
-#
-#executors:
-#  maven-executor:
-#    docker:
-#      - image: maven:3.8.3-jdk-11
-#    environment:
-#      MAVEN_OPTS: "-Dmaven.repo.local=$HOME/.m2/repository"
-#
-#jobs:
-#  start-selenium-container:
-#    executor: maven-executor
-#    steps:
-#      - run:
-#          name: Start Selenium Standalone Chrome
-#          command: docker run -d -p 4444:4444 --privileged selenium/standalone-chrome:latest
-#          background: true
-#
-#  build-and-test:
-#    executor: maven-executor
-#    steps:
-#      - attach_workspace:
-#          at: target/site/serenity
-#      - checkout
-#      - run:
-#          name: Build and Test
-#          command: mvn -e -X clean verify --file pom.xml
-#      - store_artifacts:
-#          path: target/site/serenity
-#          destination: artifact-file
-#      - store_artifacts:
-#          path: /tmp/artifacts
-#
-#  upload-report:
-#    executor: maven-executor
-#    steps:
-#      - attach_workspace:
-#          at: target/site/serenity
-#      - run:
-#          name: Upload Report
-#          command: |
-#            mkdir -p test-reports
-#            cp -R . test-reports/
-#            # Additional commands to upload the test report to a storage or reporting service
-#
-#  stop-selenium-container:
-#    executor: maven-executor
-#    steps:
-#      - run:
-#          name: Stop Selenium Standalone Chrome
-#          command: docker stop $(docker ps -q --filter ancestor=selenium/standalone-chrome:latest)
-#
-#workflows:
-#  version: 2
-#  build-and-upload:
-#    jobs:
-#      - start-selenium-container
-#      - build-and-test:
-#          requires:
-#            - start-selenium-container
-#      - upload-report:
-#          requires:
-#            - build-and-test
-#      - stop-selenium-container:  # Move 'requires' here
-#          requires:
-#            - upload-report
 
 
 
