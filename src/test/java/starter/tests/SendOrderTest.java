@@ -90,10 +90,12 @@ public class SendOrderTest {
     @Order(5)
     void tryToOrderNothing() {
         webElements.clickEmptyCartIcon();
-        if (webElements.checkoutButtonIsClickable()){
-//            Assertions.fail("Checkout button should not be clickable");
-            log.error("Checkout button should not be clickable");
-        }
+        Assertions.assertFalse(webElements.checkoutButtonIsClickable());
+        
+//        if (webElements.checkoutButtonIsClickable()){
+////            Assertions.fail("Checkout button should not be clickable");
+//            log.error("Checkout button should not be clickable");
+//        }
         actions.clickCheckOutButton();
         actions.fillCheckoutInformationForm("Martin","Blazek","912301823");
         actions.clickContinueButton();
