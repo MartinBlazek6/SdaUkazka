@@ -64,7 +64,8 @@ workflows:
             - start-selenium-container
       - stop-selenium-container:
           requires:
+            - start-selenium-container
             - build-and-test
-          when: always
+
 
 
