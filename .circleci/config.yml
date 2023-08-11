@@ -23,25 +23,29 @@ jobs:
       - run:
           name: Build and Test
           command: ./gradlew clean test
-      - store_artifacts:
-          path: build/reports/tests
-          destination: artifact-file
-      - store_artifacts:
-#          path: /tmp/artifacts
-          path: target/site/serenity
+#      - store_artifacts:
+#          path: build/reports/tests
+#          destination: artifact-file
+#      - store_artifacts:
+##          path: /tmp/artifacts
+#          path: target/site/serenity
 
   upload-report:
     executor: machine-executor
     steps:
       - attach_workspace:
           at: /tmp/workspace
+      - checkout
       - run:
           name: Upload Report
-          command: |
-            mkdir -p test-reports
-            cp -R target/site/serenity test-reports/
-            # Additional commands to upload the test report to a storage or reporting service
-            #cp -R /tmp/workspace/build/reports/tests/. test-reports/
+      - store_artifacts:
+          path: build/reports/tests
+          destination: artifact-file
+      - store_artifacts:
+          path: target/site/serenity
+
+
+
 
 
   stop-selenium-container:

@@ -91,7 +91,7 @@ public class SendOrderTest {
     void tryToOrderNothing() {
         webElements.clickEmptyCartIcon();
         Assertions.assertFalse(webElements.checkoutButtonIsClickable());
-        
+
 //        if (webElements.checkoutButtonIsClickable()){
 ////            Assertions.fail("Checkout button should not be clickable");
 //            log.error("Checkout button should not be clickable");
