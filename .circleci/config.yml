@@ -62,8 +62,9 @@ workflows:
       - build-and-test:
           requires:
             - start-selenium-container
-          on_fail: stop-selenium-container
       - stop-selenium-container:
           requires:
             - build-and-test
+          when: always
+
 
