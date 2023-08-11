@@ -24,11 +24,6 @@ jobs:
           name: Build and Test
           command: ./gradlew clean test
           no_output_timeout: 30m # Set a suitable timeout for the test command
-      - store_artifacts:
-          path: build/reports/tests
-          destination: artifact-file
-      - store_artifacts:
-          path: target/site/serenity
       - run:
           name: Stop Selenium Standalone Chrome
           command: |
@@ -38,6 +33,17 @@ jobs:
             fi
           when: on_fail # This step will run even if the previous step fails
 
+  store-artifacts:
+    executor: machine-executor
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - store_artifacts:
+          path: build/reports/tests
+          destination: artifact-file
+      - store_artifacts:
+          path: target/site/serenity
+
 workflows:
   version: 2
   build-and-upload:
@@ -46,6 +52,62 @@ workflows:
       - build-and-test:
           requires:
             - start-selenium-container
+      - store-artifacts:
+          requires:
+            - build-and-test
+
+
+
+
+
+#version: 2.1
+#
+#executors:
+#  machine-executor:
+#    machine: true
+#    environment:
+#      GRADLE_USER_HOME: "$HOME/.gradle"
+#
+#jobs:
+#  start-selenium-container:
+#    executor: machine-executor
+#    steps:
+#      - run:
+#          name: Start Selenium Standalone Chrome
+#          command: docker run -d -p 4444:4444 --privileged selenium/standalone-chrome:latest
+#
+#  build-and-test:
+#    executor: machine-executor
+#    steps:
+#      - attach_workspace:
+#          at: /tmp/workspace
+#      - checkout
+#      - run:
+#          name: Build and Test
+#          command: ./gradlew clean test
+#          no_output_timeout: 30m # Set a suitable timeout for the test command
+#      - store_artifacts:
+#          path: build/reports/tests
+#          destination: artifact-file
+#      - store_artifacts:
+#          path: target/site/serenity
+#      - run:
+#          name: Stop Selenium Standalone Chrome
+#          command: |
+#            container_id=$(docker ps -q --filter ancestor=selenium/standalone-chrome:latest)
+#            if [ -n "$container_id" ]; then
+#              docker stop "$container_id"
+#            fi
+#          when: on_fail # This step will run even if the previous step fails
+#
+#workflows:
+#  version: 2
+#  build-and-upload:
+#    jobs:
+#      - start-selenium-container
+#      - build-and-test:
+#          requires:
+#            - start-selenium-container
 
 
 
