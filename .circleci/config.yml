@@ -38,19 +38,6 @@ jobs:
             fi
           when: on_fail # This step will run even if the previous step fails
 
-  upload-report:
-    executor: machine-executor
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Upload Report
-          command: |
-            mkdir -p test-reports
-            cp -R /tmp/workspace/build/reports/tests test-reports/
-            cp -R /tmp/workspace/target/site/serenity test-reports/
-            # Additional commands to upload the test report to a storage or reporting service
-
 workflows:
   version: 2
   build-and-upload:
@@ -59,9 +46,6 @@ workflows:
       - build-and-test:
           requires:
             - start-selenium-container
-      - upload-report:
-          requires:
-            - build-and-test
 
 
 
