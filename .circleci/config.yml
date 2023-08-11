@@ -27,8 +27,7 @@ jobs:
           path: build/reports/tests
           destination: artifact-file
       - store_artifacts:
-#          path: /tmp/artifacts
-          path: target/site/serenity
+          path: /tmp/artifacts
 
   upload-report:
     executor: machine-executor
@@ -36,13 +35,16 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run:
+          name: Debugging Commands
+          command: |
+            ls -R /tmp/workspace/target
+            find /tmp/workspace/target -name "serenity"
+      - run:
           name: Upload Report
           command: |
             mkdir -p test-reports
-            cp -R target/site/serenity test-reports/
+            cp -R /tmp/workspace/target/site/serenity/. test-reports/
             # Additional commands to upload the test report to a storage or reporting service
-            #cp -R /tmp/workspace/build/reports/tests/. test-reports/
-
 
   stop-selenium-container:
     executor: machine-executor
@@ -74,61 +76,74 @@ workflows:
 
 
 
-
-
-
-
-
 #version: 2.1
 #
 #executors:
-#  maven-executor:
-#    docker:
-#      - image: maven:3.8.3-jdk-11
-#      - image: selenium/standalone-chrome:latest
+#  machine-executor:
+#    machine: true
 #    environment:
-#      MAVEN_OPTS: "-Dmaven.repo.local=$HOME/.m2/repository"
+#      GRADLE_USER_HOME: "$HOME/.gradle"
 #
 #jobs:
-#  build-and-test:
-#    executor: maven-executor
+#  start-selenium-container:
+#    executor: machine-executor
 #    steps:
+#      - run:
+#          name: Start Selenium Standalone Chrome
+#          command: docker run -d -p 4444:4444 --privileged selenium/standalone-chrome:latest
+#
+#  build-and-test:
+#    executor: machine-executor
+#    steps:
+#      - attach_workspace:
+#          at: /tmp/workspace
 #      - checkout
 #      - run:
 #          name: Build and Test
-#          command: mvn -e -X clean verify --file pom.xml
+#          command: ./gradlew clean test
 #      - store_artifacts:
-#          path: target/site/serenity
+#          path: build/reports/tests
 #          destination: artifact-file
 #      - store_artifacts:
-#          path: /tmp/artifacts
+##          path: /tmp/artifacts
+#          path: target/site/serenity
 #
 #  upload-report:
-#    executor: maven-executor
+#    executor: machine-executor
 #    steps:
+#      - attach_workspace:
+#          at: /tmp/workspace
 #      - run:
 #          name: Upload Report
 #          command: |
 #            mkdir -p test-reports
 #            cp -R target/site/serenity test-reports/
 #            # Additional commands to upload the test report to a storage or reporting service
+#            #cp -R /tmp/workspace/build/reports/tests/. test-reports/
 #
 #
-##workflows:
-##  version: 2
-##  build-and-upload:
-##    jobs:
-##      - build-and-test:
-##          requires:
-##            executor: maven-executor
-##      - upload-report:
-##          requires:
-##            - build-and-test
+#  stop-selenium-container:
+#    executor: machine-executor
+#    steps:
+#      - run:
+#          name: Stop Selenium Standalone Chrome
+#          command: |
+#            container_id=$(docker ps -q --filter ancestor=selenium/standalone-chrome:latest)
+#            if [ -n "$container_id" ]; then
+#              docker stop "$container_id"
+#            fi
+#
 #workflows:
 #  version: 2
 #  build-and-upload:
 #    jobs:
-#      - build-and-test
+#      - start-selenium-container
+#      - build-and-test:
+#          requires:
+#            - start-selenium-container
 #      - upload-report:
 #          requires:
 #            - build-and-test
+#      - stop-selenium-container:
+#          requires:
+#            - upload-report
