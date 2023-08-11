@@ -61,15 +61,14 @@
 version: 2.1
 
 executors:
-  gradle-executor:
-    docker:
-      - image: adoptopenjdk:11-jdk-hotspot
+  machine-executor:
+    machine: true
     environment:
       GRADLE_USER_HOME: "$HOME/.gradle"
 
 jobs:
   start-selenium-container:
-    executor: gradle-executor
+    executor: machine-executor
     steps:
       - run:
           name: Start Selenium Standalone Chrome
@@ -77,10 +76,10 @@ jobs:
           background: true
 
   build-and-test:
-    executor: gradle-executor
+    executor: machine-executor
     steps:
       - attach_workspace:
-          at: build/reports/tests
+          at: /tmp/workspace
       - checkout
       - run:
           name: Build and Test
@@ -92,10 +91,10 @@ jobs:
           path: /tmp/artifacts
 
   upload-report:
-    executor: gradle-executor
+    executor: machine-executor
     steps:
       - attach_workspace:
-          at: build/reports/tests
+          at: /tmp/workspace
       - run:
           name: Upload Report
           command: |
@@ -104,7 +103,7 @@ jobs:
             # Additional commands to upload the test report to a storage or reporting service
 
   stop-selenium-container:
-    executor: gradle-executor
+    executor: machine-executor
     steps:
       - run:
           name: Stop Selenium Standalone Chrome
