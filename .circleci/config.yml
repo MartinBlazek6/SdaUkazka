@@ -62,8 +62,6 @@ workflows:
       - build-and-test:
           requires:
             - start-selenium-container
-  stop-container:
-    jobs:
       - stop-selenium-container:
           requires:
-            - build-and-upload
+            - build-and-test
