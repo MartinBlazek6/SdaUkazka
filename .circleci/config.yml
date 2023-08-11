@@ -23,13 +23,18 @@ jobs:
       - run:
           name: Build and Test
           command: ./gradlew clean test
+      - store_artifacts:
+          path: build/reports/tests
+          destination: artifact-file
+      - store_artifacts:
+#          path: /tmp/artifacts
+          path: target/site/serenity
 
   upload-report:
     executor: machine-executor
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - checkout
       - run:
           name: Upload Report
       - store_artifacts:
