@@ -62,7 +62,7 @@ workflows:
             - build-and-test
       - stop-selenium-container:  # Move 'requires' here
           requires:
-            - upload-report
+            - build-and-test
 
 
 
