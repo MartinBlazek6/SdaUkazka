@@ -12,7 +12,10 @@ jobs:
     executor: gradle-executor
     steps:
       - attach_workspace:
-          at: build/reports/tests
+          at: /root/project
+      - run:
+          name: Clear Workspace
+          command: rm -rf /root/project/*
       - checkout
       - run:
           name: Build and Test
@@ -27,7 +30,7 @@ jobs:
     executor: gradle-executor
     steps:
       - attach_workspace:
-          at: build/reports/tests
+          at: /root/project
       - run:
           name: Upload Report
           command: |
@@ -43,6 +46,7 @@ workflows:
       - upload-report:
           requires:
             - build-and-test
+
 
 
 
