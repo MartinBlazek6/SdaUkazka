@@ -1,63 +1,3 @@
-#version: 2.1
-#
-#executors:
-#  gradle-executor:
-#    docker:
-#      - image: adoptopenjdk:11-jdk-hotspot
-#    environment:
-#      GRADLE_USER_HOME: "$HOME/.gradle"
-#
-#jobs:
-#  build-and-test:
-#    executor: gradle-executor
-#    steps:
-#      - attach_workspace:
-#          at: /root/project
-#      - run:
-#          name: Clear Workspace
-#          command: rm -rf /root/project/*
-#      - checkout
-#      - run:
-#          name: Build and Test
-#          command: ./gradlew clean test
-#      - store_artifacts:
-#          path: build/reports/tests
-#          destination: artifact-file
-#      - store_artifacts:
-#          path: /tmp/artifacts
-#
-#  upload-report:
-#    executor: gradle-executor
-#    steps:
-#      - attach_workspace:
-#          at: /root/project
-#      - run:
-#          name: Upload Report
-#          command: |
-#            mkdir -p test-reports
-#            cp -R . test-reports/
-#            # Additional commands to upload the test report to a storage or reporting service
-#
-#workflows:
-#  version: 2
-#  build-and-upload:
-#    jobs:
-#      - build-and-test
-#      - upload-report:
-#          requires:
-#            - build-and-test
-
-
-
-
-
-
-
-
-
-
-
-
 version: 2.1
 
 executors:
@@ -99,7 +39,7 @@ jobs:
           name: Upload Report
           command: |
             mkdir -p test-reports
-            cp -R . test-reports/
+            cp -R /tmp/workspace/test-reports/. test-reports/
             # Additional commands to upload the test report to a storage or reporting service
 
   stop-selenium-container:
@@ -123,6 +63,7 @@ workflows:
       - stop-selenium-container:  # Move 'requires' here
           requires:
             - upload-report
+
 
 
 
