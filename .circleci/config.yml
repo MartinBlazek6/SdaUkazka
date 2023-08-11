@@ -65,7 +65,7 @@ workflows:
       - upload-report:
           requires:
             - build-and-test
-          continue: true
       - stop-selenium-container:
           requires:
+            - build-and-test
             - upload-report
