@@ -39,7 +39,7 @@ jobs:
           name: Upload Report
           command: |
             mkdir -p test-reports
-            cp -R /tmp/workspace/test-reports/. test-reports/
+            cp -R /tmp/workspace/build/reports/tests/. test-reports/
             # Additional commands to upload the test report to a storage or reporting service
 
   stop-selenium-container:
@@ -63,6 +63,7 @@ workflows:
       - stop-selenium-container:  # Move 'requires' here
           requires:
             - upload-report
+
 
 
 
