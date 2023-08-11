@@ -1,4 +1,4 @@
-package starter.wikipedia.enums;
+package starter.enums;
 
 public enum Users {
     STANDARD_USER,

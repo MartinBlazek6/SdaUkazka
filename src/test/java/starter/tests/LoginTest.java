@@ -1,4 +1,4 @@
-package starter.wikipedia.tests;
+package starter.tests;
 
 import net.serenitybdd.junit5.SerenityJUnit5Extension;
 import net.thucydides.core.annotations.Managed;
@@ -7,10 +7,9 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.WebDriver;
-import starter.wikipedia.enums.Users;
-import starter.wikipedia.services.NavigateActions;
-import starter.wikipedia.services.UtilityActions;
-import starter.wikipedia.services.WebElements;
+import starter.enums.Users;
+import starter.services.NavigateActions;
+import starter.services.UtilityActions;
 
 @ExtendWith(SerenityJUnit5Extension.class)
 class LoginTest {
@@ -48,7 +47,8 @@ class LoginTest {
     @Order(4)
     void loginPageInvalidUsername() {
         navigate.toTheHomePage();
-        actions.logIn("InvalidUsername",System.getenv("password"));
+//        actions.logIn("InvalidUsername",System.getenv("password"));
+        actions.logIn("InvalidUsername","secret_sauce");
         Assertions.assertNotEquals(expectedUrlAfterLogin,driver.getCurrentUrl());
     }
 

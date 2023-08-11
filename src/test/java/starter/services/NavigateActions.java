@@ -1,4 +1,4 @@
-package starter.wikipedia.services;
+package starter.services;
 
 import net.serenitybdd.core.steps.UIInteractions;
 import net.thucydides.core.annotations.Step;

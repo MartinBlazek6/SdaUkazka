@@ -1,66 +1,123 @@
+version: 2.1
+
+executors:
+  machine-executor:
+    machine: true
+    environment:
+      GRADLE_USER_HOME: "$HOME/.gradle"
+
+jobs:
+  start-selenium-container:
+    executor: machine-executor
+    steps:
+      - run:
+          name: Start Selenium Standalone Chrome
+          command: docker run -d -p 4444:4444 --privileged selenium/standalone-chrome:latest
+
+  build-and-test:
+    executor: machine-executor
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - run:
+          name: Build and Test
+          command: ./gradlew clean test
+          no_output_timeout: 30m # Set a suitable timeout for the test command
+      - store_artifacts:
+          path: build/reports/tests
+          destination: artifact-file
+      - store_artifacts:
+          path: target/site/serenity
+      - run:
+          name: Stop Selenium Standalone Chrome
+          command: |
+            container_id=$(docker ps -q --filter ancestor=selenium/standalone-chrome:latest)
+            if [ -n "$container_id" ]; then
+              docker stop "$container_id"
+            fi
+          when: on_fail # This step will run even if the previous step fails
+
+workflows:
+  version: 2
+  build-and-upload:
+    jobs:
+      - start-selenium-container
+      - build-and-test:
+          requires:
+            - start-selenium-container
+
+
+
+
+
+
+
 #version: 2.1
 #
 #executors:
-#  maven-executor:
-#    docker:
-#      - image: maven:3.8.3-jdk-11
+#  machine-executor:
+#    machine: true
 #    environment:
-#      MAVEN_OPTS: "-Dmaven.repo.local=$HOME/.m2/repository"
+#      GRADLE_USER_HOME: "$HOME/.gradle"
 #
 #jobs:
-#  build-and-test:
-#    executor: maven-executor
+#  start-selenium-container:
+#    executor: machine-executor
 #    steps:
-#      - checkout
+#      - run:
+#          name: Start Selenium Standalone Chrome
+#          command: docker run -d -p 4444:4444 --privileged selenium/standalone-chrome:latest
 #
+#  build-and-test:
+#    executor: machine-executor
+#    steps:
+#      - attach_workspace:
+#          at: /tmp/workspace
+#      - checkout
 #      - run:
 #          name: Build and Test
-#          command: mvn clean verify
-#
-#      - store_test_results:
-#          path: target/failsafe-reports
+#          command: ./gradlew clean test
+#      - store_artifacts:
+#          path: build/reports/tests
+#          destination: artifact-file
+#      - store_artifacts:
+#          path: target/site/serenity
 #
 #  upload-report:
-#    executor: maven-executor
+#    executor: machine-executor
 #    steps:
+#      - attach_workspace:
+#          at: /tmp/workspace
 #      - run:
 #          name: Upload Report
 #          command: |
 #            mkdir -p test-reports
-#            cp -R target/site/serenity test-reports/
+#            cp -R /tmp/workspace/build/reports/tests test-reports/
+#            cp -R /tmp/workspace/target/site/serenity test-reports/
 #            # Additional commands to upload the test report to a storage or reporting service
+#
+#
+#  stop-selenium-container:
+#    executor: machine-executor
+#    steps:
+#      - run:
+#          name: Stop Selenium Standalone Chrome
+#          command: |
+#            container_id=$(docker ps -q --filter ancestor=selenium/standalone-chrome:latest)
+#            if [ -n "$container_id" ]; then
+#              docker stop "$container_id"
+#            fi
 #
 #workflows:
 #  version: 2
 #  build-and-upload:
 #    jobs:
-#      - build-and-test
-#      - upload-report:
+#      - start-selenium-container
+#      - build-and-test:
+#          requires:
+#            - start-selenium-container
+#      - stop-selenium-container:
 #          requires:
 #            - build-and-test
-
-
-
-version: 2.1
-jobs:
-  build:
-    docker:
-      - image: maven:latest
-
-    working_directory: ~/project
-
-    steps:
-      - checkout
-
-      # You can add any additional setup steps here, like installing dependencies.
-
-      - run:
-          name: Build and Run Unit Tests
-          command: mvn test
-
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - build
-
+#          always_run: true

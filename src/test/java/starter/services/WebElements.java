@@ -1,4 +1,4 @@
-package starter.wikipedia.services;
+package starter.services;
 
 import net.serenitybdd.core.pages.PageComponent;
 import net.serenitybdd.core.pages.WebElementFacade;
@@ -40,12 +40,11 @@ public class WebElements extends PageComponent {
     }
 
     public boolean checkoutButtonIsClickable(){
-       return checkoutButton.isClickable();
+       return checkoutButton.waitUntilClickable().isClickable();
     }
     public void clearCart(){
         JavascriptExecutor jsExecutor = (JavascriptExecutor) getDriver();
         jsExecutor.executeScript("window.localStorage.removeItem('cart-contents');");
-//        jsExecutor.executeScript("window.localStorage.removeItem('cart-contents');");
         getDriver().navigate().refresh();
     }
 

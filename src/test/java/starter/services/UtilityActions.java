@@ -1,4 +1,4 @@
-package starter.wikipedia.services;
+package starter.services;
 
 import net.serenitybdd.core.steps.UIInteractions;
 import net.thucydides.core.annotations.Step;
@@ -9,10 +9,6 @@ import org.openqa.selenium.WebElement;
 
 public class UtilityActions extends UIInteractions {
 
-    @Step("Search by keyword '{0}'")
-    public void searchBy(String keyword) {
-        $("#searchInput").sendKeys(keyword, Keys.ENTER);
-    }
 
     @Step
     public void sendKeysUsername(String username) {

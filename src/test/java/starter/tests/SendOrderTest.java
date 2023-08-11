@@ -1,17 +1,19 @@
-package starter.wikipedia.tests;
+package starter.tests;
 
+import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.junit5.SerenityJUnit5Extension;
 import net.thucydides.core.annotations.Managed;
-import org.apache.http.util.Asserts;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.WebDriver;
-import starter.wikipedia.enums.Items;
-import starter.wikipedia.enums.Users;
-import starter.wikipedia.services.NavigateActions;
-import starter.wikipedia.services.UtilityActions;
-import starter.wikipedia.services.WebElements;
+import starter.enums.Items;
+import starter.enums.Users;
+import starter.services.NavigateActions;
+import starter.services.UtilityActions;
+import starter.services.WebElements;
 
+
+@Slf4j
 @ExtendWith(SerenityJUnit5Extension.class)
 public class SendOrderTest {
 
@@ -88,7 +90,9 @@ public class SendOrderTest {
     @Order(5)
     void tryToOrderNothing() {
         webElements.clickEmptyCartIcon();
-        Assertions.assertFalse(webElements.checkoutButtonIsClickable());
+        if (webElements.checkoutButtonIsClickable()){
+            Assertions.fail("Checkout button should not be clickable");
+        }
         actions.clickCheckOutButton();
         actions.fillCheckoutInformationForm("Martin","Blazek","912301823");
         actions.clickContinueButton();
