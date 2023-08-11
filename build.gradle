@@ -16,9 +16,10 @@ ext {
     slf4jVersion = '1.7.7'
     serenityCoreVersion = '3.6.12'
     junitVersion = '5.9.2'
-    assertJVersion = '3.23.1'
-    lombokVersion = '1.18.24'
-    logbackVersion = '1.2.11'
+    assertJVersion = '3.24.2'
+    lombokVersion = '1.18.26'
+    logbackVersion = '1.4.7'
+    selenium = '4.8.1'
 }
 
 dependencies {
@@ -30,7 +31,9 @@ dependencies {
             "org.junit.jupiter:junit-jupiter-engine:${junitVersion}",
             "org.assertj:assertj-core:${assertJVersion}",
             "org.projectlombok:lombok:${lombokVersion}",
-            "ch.qos.logback:logback-classic:${logbackVersion}"
+            "ch.qos.logback:logback-classic:${logbackVersion}",
+            "org.seleniumhq.selenium:selenium-java:${selenium}"
+
 }
 
 test {
