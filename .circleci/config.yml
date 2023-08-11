@@ -13,7 +13,6 @@ jobs:
       - run:
           name: Start Selenium Standalone Chrome
           command: docker run -d -p 4444:4444 --privileged selenium/standalone-chrome:latest
-          background: true
 
   build-and-test:
     executor: machine-executor
@@ -47,7 +46,11 @@ jobs:
     steps:
       - run:
           name: Stop Selenium Standalone Chrome
-          command: docker stop $(docker ps -q --filter ancestor=selenium/standalone-chrome:latest)
+          command: |
+            container_id=$(docker ps -q --filter ancestor=selenium/standalone-chrome:latest)
+            if [ -n "$container_id" ]; then
+              docker stop "$container_id"
+            fi
 
 workflows:
   version: 2
@@ -60,9 +63,10 @@ workflows:
       - upload-report:
           requires:
             - build-and-test
-      - stop-selenium-container:  # Move 'requires' here
+      - stop-selenium-container:
           requires:
-            - build-and-test
+            - upload-report
+
 
 
 
