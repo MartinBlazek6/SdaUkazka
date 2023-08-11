@@ -64,8 +64,5 @@ workflows:
             - start-selenium-container
       - stop-selenium-container:
           requires:
-            - start-selenium-container
             - build-and-test
-
-
-
+          always_run: true
