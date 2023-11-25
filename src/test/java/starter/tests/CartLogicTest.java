@@ -28,7 +28,7 @@ public class CartLogicTest {
     void beforeEach(){
         navigate.toTheHomePage();
         actions.logIn(Users.STANDARD_USER.name().toLowerCase(),"secret_sauce");
-//        actions.logIn(Users.STANDARD_USER.name().toLowerCase(),System.getenv("password"));
+//       actions.logIn(Users.STANDARD_USER.name().toLowerCase(),System.getenv("password"));
         Assertions.assertEquals(expectedUrlAfterLogin,driver.getCurrentUrl());
     }
 
