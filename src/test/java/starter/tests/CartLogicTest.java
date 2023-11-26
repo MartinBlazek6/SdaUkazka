@@ -37,7 +37,6 @@ public class CartLogicTest {
         actions.addToCartByName(Items.BACKPACK.getValue());
         actions.addToCartByName(Items.BIKE_LIGHT.getValue());
         Assertions.assertEquals(String.valueOf(2),webElements.cartItems());
-
         actions.removeFromCartByName(Items.BACKPACK.getValue());
         Assertions.assertEquals(String.valueOf(1),webElements.cartItems());
     }
